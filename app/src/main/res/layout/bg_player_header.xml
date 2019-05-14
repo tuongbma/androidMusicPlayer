@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <EditText
+        android:layout_alignParentRight="true"
+        android:hint="Tim kiem Online"
+        android:layout_marginLeft="44dp"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:id="@+id/txtSearch">
+    </EditText>
+    <ImageButton
+        android:layout_alignParentLeft="true"
+        android:id="@+id/btnSearch"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:background="@null"
+        android:src="@drawable/btn_search" />
+</RelativeLayout>

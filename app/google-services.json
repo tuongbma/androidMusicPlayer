@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "1084590805564",
+    "firebase_url": "https://musicapplication-f21a5.firebaseio.com",
+    "project_id": "musicapplication-f21a5",
+    "storage_bucket": "musicapplication-f21a5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1084590805564:android:337a9fe8a053329b",
+        "android_client_info": {
+          "package_name": "com.ptit.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1084590805564-7rmv8ubvvb0cj76alrpggp41drd8bugd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ptit.android",
+            "certificate_hash": "676181bc190fb54e7954407f4b38ddd73f523a4f"
+          }
+        },
+        {
+          "client_id": "1084590805564-f3nrc9gu3hu6can8a1s5cfdsa8gnh00b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ptit.android",
+            "certificate_hash": "74a1d7330bd8b79baff0b3faa6b78dd248cb27b1"
+          }
+        },
+        {
+          "client_id": "1084590805564-0fc99rag9rduq6cvecrqksjd4qr2fdnl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzHj44PqppsZXFTdTUxwSmh5Ehwyw-q7c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1084590805564-0fc99rag9rduq6cvecrqksjd4qr2fdnl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

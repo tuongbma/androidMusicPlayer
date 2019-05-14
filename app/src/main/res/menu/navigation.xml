@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/actionHome"
+        android:enabled="true"
+        android:icon="@drawable/home"
+        android:title="Home"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/actionOnline"
+        android:enabled="true"
+        android:icon="@drawable/online"
+        android:title="Online"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/actionOffline"
+        android:enabled="true"
+        android:icon="@drawable/offline"
+        android:title="Offline"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/actionPlaying"
+        android:enabled="true"
+        android:icon="@drawable/playing"
+        android:title="Playing"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/actionPersonal"
+        android:enabled="true"
+        android:icon="@drawable/personal"
+        android:title="Personal"
+        app:showAsAction="ifRoom"/>
+</menu>

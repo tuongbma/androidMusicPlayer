@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="350dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/list_selector" >
+
+    <ImageView
+        android:id="@+id/list_image"
+        android:layout_width="50dip"
+        android:layout_height="50dip"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/tuanhung"
+        android:layout_marginRight="5dip"
+        android:padding="3dip"
+        />
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/list_image"
+        android:layout_toRightOf="@+id/list_image"
+        android:textColor="#040404"
+        android:typeface="sans"
+        android:text="Tìm lại bầu trời"
+        android:textSize="15sp"
+        android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/artist"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"
+        android:textColor="#343434"
+        android:text="Tuấn Hưng"
+        android:textSize="12sp"
+        android:layout_marginTop="1dip"
+        android:layout_toRightOf="@+id/list_image"
+        />
+    <TextView
+        android:id="@+id/duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@id/title"
+        android:text="03:14"
+        android:gravity="right"
+        android:layout_marginRight="5dip"
+        android:textSize="12sp"
+        android:textColor="#10bcc9"
+        android:textStyle="bold"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/arrow"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"/>
+</RelativeLayout>
