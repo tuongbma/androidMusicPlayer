@@ -17,6 +17,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.ptit.android.model.Song;
 
@@ -57,7 +58,6 @@ public class SongsManager {
         songList = new ArrayList<>();
         for (File file : Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).listFiles(new FileExtensionFilter())) {
             String filePath = file.getAbsolutePath();
-            System.out.println("FILEPATH" + filePath);
             Song bean = getInfoSongFromSource(Constants.MODE.OFFLINE, filePath);
             songList.add(bean);
         }
@@ -81,6 +81,25 @@ public class SongsManager {
         songList = new ArrayList<Song>();
         DatabaseReference myRef = getFireBaseReference();
         if (text != null && !text.isEmpty()) {
+//            Query query = myRef.orderByChild("title").startAt(text);
+//            System.out.println("TEXTTTTTTTTT: " + text);
+//            query.addValueEventListener(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+//                        String searchTxt = text.toLowerCase();
+//                        Song s = data.getValue(Song.class);
+//                        songList.add(s);
+//                    }
+//                    System.out.println("SONG LIST SIZE: " + songList.size());
+//                    myCallback.onCallback(songList);
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                }
+//            });
             myRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

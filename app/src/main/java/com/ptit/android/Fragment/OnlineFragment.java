@@ -72,6 +72,7 @@ public class OnlineFragment extends ListFragment {
             @Override
             public void onClick(View v) {
                 String txt = edtSearch.getText().toString();
+                System.out.println("TEXT SEARCH: " + txt);
                 if(txt != null && !txt.isEmpty()) {
                     performSearch(txt);
                 }
@@ -103,6 +104,7 @@ public class OnlineFragment extends ListFragment {
                 System.out.println("song index " + songIndex);
                 // Starting new intent
                 txtSearch = edtSearch.getText().toString();
+                bundle = new Bundle();
                 bundle.putInt("songIndex", songIndex);
                 bundle.putString("txtSearch", txtSearch);
                 bundle.putLong("MODE", Constants.MODE.ONLINE);
@@ -114,7 +116,7 @@ public class OnlineFragment extends ListFragment {
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 MainActivity.playMusicFragment = playMusicFragment;
                 fragmentTransaction.remove(fragmentManager.findFragmentByTag("playMusicFragment"));
-                fragmentTransaction.add(R.id.fragment_container, playMusicFragment, "playMusicFragment");
+                fragmentTransaction.replace(R.id.fragment_container, playMusicFragment, "playMusicFragment");
                 fragmentTransaction.commit();
             }
         });
@@ -131,14 +133,13 @@ public class OnlineFragment extends ListFragment {
                         Song songBean = songsManager.getInfoSongFromSource(Constants.MODE.ONLINE, song.getSource());
                         songLst.add(songBean);
                     }
-
                     System.out.println("song list size 2 " + songLst.size());
                     MyArrayAdapter mayArr = new MyArrayAdapter(getActivity(), R.layout.list_row, songLst);
                     lvSong.setAdapter(mayArr);
-                    if(songLst != null && songLst.size() > 0) {
-                        System.out.println("song list bundle: " + songLst.size());
-                        bundle.putSerializable("songListOnline",songLst);
-                    }
+//                    if(songLst != null && songLst.size() > 0) {
+//                        System.out.println("song list bundle: " + songLst.size());
+//                        bundle.putSerializable("songListOnline",songLst);
+//                    }
                 }
             });
 
