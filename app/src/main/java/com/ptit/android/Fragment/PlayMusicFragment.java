@@ -140,7 +140,14 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
             {
                 vibe.vibrate(100);
                 if(Constants.MODE.ONLINE.equals(mode)) {
-                    playSongOffline(currentSongIndex);
+                    if (currentSongIndex < (songsList.size() - 1)) {
+                        playSongOnline(currentSongIndex + 1);
+                        currentSongIndex = currentSongIndex + 1;
+                    } else {
+                        // play first song
+                        playSongOnline(0);
+                        currentSongIndex = 0;
+                    }
                 } else {
                     if (currentSongIndex < (songsList.size() - 1)) {
                         playSongOffline(currentSongIndex + 1);
@@ -258,7 +265,14 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
             @Override
             public void onClick(View arg0) {
                 if(Constants.MODE.ONLINE.equals(mode)) {
-                    playSongOffline(currentSongIndex);
+                    if (currentSongIndex > 0) {
+                        playSongOnline(currentSongIndex - 1);
+                        currentSongIndex = currentSongIndex - 1;
+                    } else {
+                        // play last song
+                        playSongOnline(songsList.size() - 1);
+                        currentSongIndex = songsList.size() - 1;
+                    }
                 } else {
                     if (currentSongIndex > 0) {
                         playSongOffline(currentSongIndex - 1);

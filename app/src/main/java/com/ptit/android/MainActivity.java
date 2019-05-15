@@ -1,6 +1,7 @@
 package com.ptit.android;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
@@ -10,6 +11,7 @@ import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -96,7 +98,6 @@ public class MainActivity<recordingBufferLock> extends AppCompatActivity {
     public static Fragment playMusicFragment = new PlayMusicFragment();
     public static Fragment homeFragment = new HomeFragment();
     public static Fragment personalFragment = new PersonalFragment();
-
     public static FragmentManager fragmentManager;
     // UI elements.
     private static final int REQUEST_RECORD_AUDIO = 13;
@@ -173,12 +174,12 @@ public class MainActivity<recordingBufferLock> extends AppCompatActivity {
     }
 
 
-//    private void requestMicrophonePermission() {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            requestPermissions(
-//                    new String[]{android.Manifest.permission.RECORD_AUDIO}, REQUEST_RECORD_AUDIO);
-//        }
-//    }
+    private void requestMicrophonePermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(
+                    new String[]{android.Manifest.permission.RECORD_AUDIO}, REQUEST_RECORD_AUDIO);
+        }
+    }
 
     private boolean askPermission(int requestId, String permissionName) {
         if (android.os.Build.VERSION.SDK_INT >= 23) {

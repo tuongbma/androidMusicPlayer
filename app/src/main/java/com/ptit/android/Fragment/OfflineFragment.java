@@ -55,7 +55,7 @@ public class OfflineFragment extends ListFragment {
         songsManager = new SongsManager();
         // get all songs from sdcard
         askReadPermission();
-        askWritePermission();
+//        askWritePermission();
         if (songsList.size() == 0) {
             toastMessage("Khong co bai hat nao");
         } else {
@@ -112,8 +112,8 @@ public class OfflineFragment extends ListFragment {
         boolean canRead = this.askPermission(REQUEST_ID_READ_PERMISSION,
                 Manifest.permission.READ_EXTERNAL_STORAGE);
         if (canRead) {
-//            this.songsList = songsManager.getOfflineList();
-//            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBB");
+            this.songsList = songsManager.getOfflineList();
+            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBB");
         }
     }
     private void askWritePermission() {
@@ -121,8 +121,8 @@ public class OfflineFragment extends ListFragment {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE);
         //
         if (canWrite) {
-            this.songsList = songsManager.getOfflineList();
-            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBB");
+//            this.songsList = songsManager.getOfflineList();
+//            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBB");
         }
     }
 

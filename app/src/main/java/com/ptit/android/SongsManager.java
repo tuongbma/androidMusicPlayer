@@ -61,7 +61,6 @@ public class SongsManager {
         songList = new ArrayList<>();
         for (File file : Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).listFiles(new FileExtensionFilter())) {
             String filePath = file.getAbsolutePath();
-            System.out.println("FILEPATH" + filePath);
             Song bean = getInfoSongFromSource(Constants.MODE.OFFLINE, filePath);
             songList.add(bean);
         }
