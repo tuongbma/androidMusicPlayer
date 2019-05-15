@@ -1,12 +1,13 @@
 package com.ptit.android.model;
 
 public class User {
-    public String name, phone, birthday, email;
+    public String name, phone, birthday, email, id;
     public User() {
 
     }
 
-    public User(String name, String phone, String birthday, String email) {
+    public User(String id, String name, String phone, String birthday, String email) {
+        this.id = id;
         this.name = name;
         this.phone = phone;
         this.birthday = birthday;
@@ -43,5 +44,24 @@ public class User {
 
     public void setBirthday(String birthday) {
         this.birthday = birthday;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", birthday='" + birthday + '\'' +
+                ", email='" + email + '\'' +
+                ", id='" + id + '\'' +
+                '}';
     }
 }

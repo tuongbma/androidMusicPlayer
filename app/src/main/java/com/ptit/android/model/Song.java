@@ -7,7 +7,7 @@ import android.os.Parcelable;
 import java.io.Serializable;
 
 public class Song implements Serializable {
-    private String songId;
+    private String id;
     private String title;
     private String artist;
     private String source;
@@ -19,24 +19,12 @@ public class Song implements Serializable {
     public Song() {
     }
 
-    protected Song(Parcel in) {
-        songId = in.readString();
-        title = in.readString();
-        artist = in.readString();
-        source = in.readString();
-        duration = in.readString();
-        songImage = in.readParcelable(Bitmap.class.getClassLoader());
-        genre = in.readString();
-        linkDownload = in.readString();
+    public String getId() {
+        return id;
     }
 
-
-    public String getSongId() {
-        return songId;
-    }
-
-    public void setSongId(String songId) {
-        this.songId = songId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getTitle() {

@@ -55,6 +55,7 @@ public class OnlineFragment extends ListFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         edtSearch = view.findViewById(R.id.txtSearch);
         btnSearch =(ImageButton) view.findViewById(R.id.btnSearch);
+        MainActivity.navigationView.setSelectedItemId(R.id.actionOnline);
 //        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1);
         lvSong = getListView();
         if (typeSearch == null) {
@@ -131,6 +132,7 @@ public class OnlineFragment extends ListFragment {
                     songLst = new ArrayList<>();
                     for (Song song : songList) {
                         Song songBean = songsManager.getInfoSongFromSource(Constants.MODE.ONLINE, song.getSource());
+                        songBean.setId(song.getId());
                         songLst.add(songBean);
                     }
                     System.out.println("song list size 2 " + songLst.size());

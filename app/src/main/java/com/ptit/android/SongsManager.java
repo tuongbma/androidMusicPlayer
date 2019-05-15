@@ -135,6 +135,7 @@ public class SongsManager {
                             }
                         }
                     }
+                    sortList(songList);
                     myCallback.onCallback(songList);
                 }
 
@@ -170,13 +171,6 @@ public class SongsManager {
             System.out.println("source" + source);
         } else {
             System.out.println("SOURCE: " + source);
-            try (FileInputStream is = new FileInputStream(source)) {
-                FileDescriptor fd = is.getFD();
-            } catch (FileNotFoundException fileEx) {
-                System.out.println("FILE NOT FOUND");
-            } catch (IOException ioEx) {
-                System.out.println("IO Exception");
-            }
             metaRetriver.setDataSource(source);
         }
 

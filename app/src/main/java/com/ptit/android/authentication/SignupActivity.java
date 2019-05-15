@@ -16,6 +16,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
+import com.ptit.android.MainActivity;
 import com.ptit.android.R;
 import com.ptit.android.model.User;
 
@@ -69,17 +70,17 @@ public class SignupActivity extends AppCompatActivity {
                 final String phonenumber = inputPhoneNumber.getText().toString().trim();
 
                 if (TextUtils.isEmpty(email)) {
-                    Toast.makeText(getApplicationContext(), "Enter email address!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Vui lòng nhập email!", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 if (TextUtils.isEmpty(password)) {
-                    Toast.makeText(getApplicationContext(), "Enter password!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Vui lòng nhập mật khẩu!", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 if (password.length() < 6) {
-                    Toast.makeText(getApplicationContext(), "Password too short, enter minimum 6 characters!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Mật khẩu quá ngắn,vui lòng nhập ít nhất là 6 kí tự!!", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -89,31 +90,33 @@ public class SignupActivity extends AppCompatActivity {
                         .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                Toast.makeText(SignupActivity.this, "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SignupActivity.this, "Đăng ký thành công " + task.isSuccessful(), Toast.LENGTH_SHORT).show();
                                 progressBar.setVisibility(View.GONE);
-                                //if success --> save addition information
-                                User user = new User(name, phonenumber, birthday, email);
-//                                FirebaseDatabase.getInstance().getReference("Users")
-//                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-//                                        .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                    @Override
-//                                    public void onComplete(@NonNull Task<Void> task) {
-//                                        if (task.isSuccessful()) {
-//                                            System.out.println("Luu thanh cong!!!!");
 //
-//                                        }
-//                                    }
-//                                });
                                 FirebaseUser userAuthor = auth.getCurrentUser();
+                                //if success --> save addition information
+                                User user = new User(userAuthor.getUid(), name, phonenumber, birthday, email);
+                                System.out.println("UID: " + userAuthor.getUid());
+                                FirebaseDatabase.getInstance().getReference("Users")
+                                        .child(userAuthor.getUid())
+                                        .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            System.out.println("Luu thanh cong!!!!");
+
+                                        }
+                                    }
+                                });
                                 // If sign in fails, display a message to the user. If sign in succeeds
                                 // the auth state listener will be notified and logic to handle the
                                 // signed in user can be handled in the listener.
                                 if (!task.isSuccessful()) {
-                                    Toast.makeText(SignupActivity.this, "Authentication failed." + task.getException(),
+                                    Toast.makeText(SignupActivity.this, "Đăng ký thất bại" + task.getException(),
                                             Toast.LENGTH_SHORT).show();
                                     System.out.println(task.getException());
                                 } else {
-                                    startActivity(new Intent(SignupActivity.this, UserInfoActivity.class));
+                                    startActivity(new Intent(SignupActivity.this, MainActivity.class));
                                     finish();
                                 }
                             }

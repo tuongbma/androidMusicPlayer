@@ -22,6 +22,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.ptit.android.model.Song;
 
 import java.io.IOException;
@@ -206,7 +208,17 @@ public class PlayMusicActivity extends Activity implements OnCompletionListener,
         btnLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
-
+//                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Playlists");
+//                ref.child()
+//                database.ref('locations').child('050PNS74ZW8XZ')
+//                        .once('value')
+//                        .then(function(snapshot) {
+//                    var value = snapshot.val();
+//                    console.log('location:', value.account_capabilities);
+//                    resp.json(value.account_capabilities);
+//                })
+//                        .child(userAuthor.getUid())
+//                        .setValue(user)
             }
         });
 

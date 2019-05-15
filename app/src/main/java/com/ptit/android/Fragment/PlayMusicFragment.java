@@ -31,6 +31,9 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.ptit.android.Constants;
 import com.ptit.android.MainActivity;
 import com.ptit.android.R;
@@ -63,6 +66,7 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
     private TextView songCurrentDurationLabel;
     private TextView songTotalDurationLabel;
     private ImageView albumPic;
+    private ImageButton btnLike;
 
     public String command = null;
 
@@ -87,6 +91,8 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
     private DownloadManager downloadManager;
     private AlertDialog.Builder builder;
 
+    private FirebaseAuth auth;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -110,6 +116,7 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
         songTitleLabel = (TextView) v.findViewById(R.id.songTitle);
         songCurrentDurationLabel = (TextView) v.findViewById(R.id.songCurrentDurationLabel);
         songTotalDurationLabel = (TextView) v.findViewById(R.id.songTotalDurationLabel);
+        btnLike =(ImageButton) v.findViewById(R.id.btnLike);
         albumPic = v.findViewById(R.id.albumPic);
         Animation aniRotate = AnimationUtils.loadAnimation(getActivity(),R.anim.rotate);
         albumPic.startAnimation(aniRotate);
@@ -409,7 +416,12 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
             });
         }
 
-
+        btnLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//
+            }
+        });
 
 
 //        /**

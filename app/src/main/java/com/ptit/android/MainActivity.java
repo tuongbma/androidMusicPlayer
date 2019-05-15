@@ -33,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
 import com.ptit.android.Fragment.HomeFragment;
 import com.ptit.android.Fragment.OfflineFragment;
 import com.ptit.android.Fragment.OnlineFragment;
@@ -107,6 +108,7 @@ public class MainActivity<recordingBufferLock> extends AppCompatActivity {
     // UI elements.
     private static final int REQUEST_RECORD_AUDIO = 13;
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
+    private FirebaseAuth auth;
 
     /**
      * Memory-map the model file in Assets.
@@ -133,7 +135,19 @@ public class MainActivity<recordingBufferLock> extends AppCompatActivity {
         navigationView.setOnNavigationItemSelectedListener(navListener);
         lblSeachResult = findViewById(R.id.lblSearchResult);
         fragmentManager = getSupportFragmentManager();
-        loadFragment(homeFragment, "homeFragment");
+        //Get Firebase auth instance
+        auth = FirebaseAuth.getInstance();
+
+        if (auth.getCurrentUser() != null) {
+            System.out.println("Emaillllllllllll" + auth.getCurrentUser().getEmail());
+            if (!checkIfFragmentExisted("personalFragment")) {
+                loadFragment(personalFragment, "personalFragment");
+            }
+        } else {
+            if (!checkIfFragmentExisted("homeFragment")) {
+                loadFragment(homeFragment, "homeFragment");
+            }
+        }
 
         btnOnline = (ImageButton) findViewById(R.id.btnSearch);
 //        btnOffline = (Button) findViewById(R.id.btnOffline);
@@ -177,9 +191,9 @@ public class MainActivity<recordingBufferLock> extends AppCompatActivity {
         tfLite.resizeInput(0, new int[]{RECORDING_LENGTH, 1});
 
         // Start the recording and recognition threads.
-        requestMicrophonePermission();
-        startRecording();
-        startRecognition();
+//        requestMicrophonePermission();
+//        startRecording();
+//        startRecognition();
     }
 
 
@@ -454,7 +468,7 @@ public class MainActivity<recordingBufferLock> extends AppCompatActivity {
                             ((PlayMusicFragment) playMusicFragment).setCommand("next");
                         } else if (txtSearch.contains("play")) {
                             ((PlayMusicFragment) playMusicFragment).setCommand("play");
-                        }else {
+                        } else {
                             bundle.putString("txtSearch", txtSearch);
                             OfflineFragment offlineFragment = new OfflineFragment();
                             offlineFragment.setArguments(bundle);
@@ -512,12 +526,17 @@ public class MainActivity<recordingBufferLock> extends AppCompatActivity {
                                 showHideFragment(playMusicFragment, onlineFragment, offlineFragment, homeFragment, personalFragment);
                                 break;
                             case R.id.actionPersonal:
-//                                if (!checkIfFragmentExisted("personalFragment")) {
-//                                    loadFragment(personalFragment, "personalFragment");
-//                                }
-//                                showHideFragment(personalFragment, homeFragment, onlineFragment, offlineFragment, playMusicFragment);
-                                startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                                finish();
+                                if (auth.getCurrentUser() != null) {
+                                    System.out.println("DA LOGINNNNNNNNNNNNNNNN");
+                                    if (!checkIfFragmentExisted("personalFragment")) {
+                                        loadFragment(personalFragment, "personalFragment");
+                                    }
+                                    showHideFragment(personalFragment, homeFragment, onlineFragment, offlineFragment, playMusicFragment);
+                                } else {
+                                    System.out.println("CHUA LOGINNNNNNNNNNNNNNNN");
+                                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                                    finish();
+                                }
                                 break;
                         }
                         return true;

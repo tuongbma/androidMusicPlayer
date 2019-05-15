@@ -53,6 +53,7 @@ public class OfflineFragment extends ListFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         edtSearch = view.findViewById(R.id.txtSearch);
+        MainActivity.navigationView.setSelectedItemId(R.id.actionOffline);
         songsManager = new SongsManager();
         // get all songs from sdcard
         askReadPermission();
