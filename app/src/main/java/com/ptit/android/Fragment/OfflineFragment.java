@@ -123,7 +123,6 @@ public class OfflineFragment extends ListFragment {
                 Manifest.permission.READ_EXTERNAL_STORAGE);
         if (canRead) {
             this.songsList = songsManager.getOfflineList();
-            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBB");
         }
     }
     private void askWritePermission() {
@@ -163,6 +162,7 @@ public class OfflineFragment extends ListFragment {
             switch (requestCode) {
                 case REQUEST_ID_READ_PERMISSION: {
                     if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        this.songsList = songsManager.getOfflineList();
                         Toast.makeText(getActivity(), "Read Permission Allowed!", Toast.LENGTH_SHORT).show();
                     }
                 }
