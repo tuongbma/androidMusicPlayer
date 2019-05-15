@@ -36,6 +36,8 @@ import com.ptit.android.Fragment.OfflineFragment;
 import com.ptit.android.Fragment.OnlineFragment;
 import com.ptit.android.Fragment.PersonalFragment;
 import com.ptit.android.Fragment.PlayMusicFragment;
+import com.ptit.android.authentication.LoginActivity;
+import com.ptit.android.authentication.UserInfoActivity;
 import com.ptit.android.speechrecognize.RecognizeCommands;
 
 import org.tensorflow.lite.Interpreter;
@@ -487,10 +489,12 @@ public class MainActivity<recordingBufferLock> extends AppCompatActivity {
                                 showHideFragment(playMusicFragment, onlineFragment, offlineFragment, homeFragment, personalFragment);
                                 break;
                             case R.id.actionPersonal:
-                                if (!checkIfFragmentExisted("personalFragment")) {
-                                    loadFragment(personalFragment, "personalFragment");
-                                }
-                                showHideFragment(personalFragment, homeFragment, onlineFragment, offlineFragment, playMusicFragment);
+//                                if (!checkIfFragmentExisted("personalFragment")) {
+//                                    loadFragment(personalFragment, "personalFragment");
+//                                }
+//                                showHideFragment(personalFragment, homeFragment, onlineFragment, offlineFragment, playMusicFragment);
+                                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                                finish();
                                 break;
                         }
                         return true;

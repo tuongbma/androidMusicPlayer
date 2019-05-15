@@ -28,6 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -248,6 +249,16 @@ public class SongsManager {
                 lstResult.add(s);
             }
         }
+        sortList(lstResult);
         return lstResult;
+    }
+
+    public void sortList(ArrayList<Song> songList) {
+        Comparator<Song> compareByTitle = new Comparator<Song>() {
+            @Override
+            public int compare(Song o1, Song o2) {
+                return o1.getTitle().compareTo(o2.getTitle());
+            }
+        };
     }
 }
