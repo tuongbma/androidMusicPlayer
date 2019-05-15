@@ -1,5 +1,6 @@
 package com.ptit.android.Fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,6 +10,7 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -24,6 +26,7 @@ import android.widget.Toast;
 
 import com.ptit.android.Constants;
 import com.ptit.android.R;
+import com.ptit.android.ShakeListener;
 import com.ptit.android.SongsManager;
 import com.ptit.android.Utilities;
 import com.ptit.android.model.Song;
@@ -67,6 +70,7 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
     private ArrayList<HashMap<String, String>> songsListOffline = new ArrayList<HashMap<String, String>>();
     private ArrayList<HashMap<String, String>> songsListOnline = new ArrayList<HashMap<String, String>>();
     private ArrayList<Song> songsList = new ArrayList<Song>();
+    private ShakeListener mShaker;
 
     @Nullable
     @Override
@@ -107,6 +111,8 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
             typeSearch = bundle.getLong("typeSearch");
             currentSongIndex = bundle.getInt("songIndex");
             textSearch = bundle.getString("txtSearch");
+            songsList = (ArrayList<Song>) bundle.getSerializable("songListOnline");
+            System.out.println("song list online: " + songsList.size());
             if(typeSearch == 0) {
                 typeSearch = Constants.SEARCH_TYPE.TITLE;
             }
@@ -124,6 +130,28 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
         } catch (NullPointerException e){
             Toast.makeText(getActivity(), "Không có bài hát nào được phát", Toast.LENGTH_SHORT).show();
         }
+
+        final Vibrator vibe = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+
+        mShaker = new ShakeListener(getActivity());
+        mShaker.setOnShakeListener(new ShakeListener.OnShakeListener () {
+            public void onShake()
+            {
+                vibe.vibrate(100);
+                if(Constants.MODE.ONLINE.equals(mode)) {
+                    playSongOffline(currentSongIndex);
+                } else {
+                    if (currentSongIndex < (songsList.size() - 1)) {
+                        playSongOffline(currentSongIndex + 1);
+                        currentSongIndex = currentSongIndex + 1;
+                    } else {
+                        // play first song
+                        playSongOffline(0);
+                        currentSongIndex = 0;
+                    }
+                }
+            }
+        });
 
         /**
          * Play button click event
@@ -523,6 +551,19 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
         }
     }
 
+
+    @Override
+    public void onResume()
+    {
+        mShaker.resume();
+        super.onResume();
+    }
+    @Override
+    public void onPause()
+    {
+        mShaker.pause();
+        super.onPause();
+    }
     @Override
     public void onDestroy() {
         super.onDestroy();

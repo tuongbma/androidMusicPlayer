@@ -1,5 +1,7 @@
 package com.ptit.android;
 
+import android.content.ContentResolver;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
@@ -30,7 +32,7 @@ import java.util.List;
 
 public class SongsManager {
 
-    private ArrayList<Song> songList;
+    private ArrayList<Song> songList = new ArrayList<>();
     private String DB_NAME = "songs";
     private FirebaseDatabase database;
     private static Long TITLE_SEARCH_TYPE = 1L;
@@ -51,16 +53,10 @@ public class SongsManager {
      * and store the details in ArrayList
      */
     public ArrayList<Song> getOfflineList() {
-        // SDCard Path
-//        String MEDIA_PATH = new String("/sdcard/Download/");
-//        System.out.println(MEDIA_PATH);
+
         songList = new ArrayList<>();
-//        File home = new File(MEDIA_PATH);
-//        System.out.println("size: " + home.listFiles(new FileExtensionFilter()).length);
-        System.out.println("LENGTH" + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).listFiles().length);
-//        if (home.listFiles(new FileExtensionFilter()).length > 0) {
         for (File file : Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).listFiles(new FileExtensionFilter())) {
-            String filePath = file.getAbsolutePath().replaceAll("\\s+", "");
+            String filePath = file.getAbsolutePath();
             System.out.println("FILEPATH" + filePath);
             Song bean = getInfoSongFromSource(Constants.MODE.OFFLINE, filePath);
             songList.add(bean);
@@ -135,7 +131,6 @@ public class SongsManager {
         Song song = new Song();
         metaRetriver = new MediaMetadataRetriever();
         if (Constants.MODE.ONLINE.equals(mode)) {
-            source = Constants.STORE_FIREBASE_SERVER + source;
             metaRetriver.setDataSource(source, new HashMap<String, String>());
             System.out.println("source" + source);
         } else {

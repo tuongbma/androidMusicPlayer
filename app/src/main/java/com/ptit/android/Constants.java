@@ -2,7 +2,7 @@ package com.ptit.android;
 
 public final class Constants {
 
-    public static String STORE_FIREBASE_SERVER = "https://firebasestorage.googleapis.com/v0/b/musicapplication-f21a5.appspot.com/o/";
+    public static String STORE_FIREBASE_SERVER = "https://firebasestorage.googleapis.com/v0/b/musicplayer-2bb62.appspot.com/o/";
     public Constants() {
     }
 
