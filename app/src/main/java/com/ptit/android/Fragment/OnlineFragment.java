@@ -72,6 +72,7 @@ public class OnlineFragment extends ListFragment {
             @Override
             public void onClick(View v) {
                 String txt = edtSearch.getText().toString();
+                System.out.printf("searchhhhhhhhhhhhhhhhhhhhhhh: " + txt);
                 if(txt != null && !txt.isEmpty()) {
                     performSearch(txt);
                 }
@@ -98,9 +99,14 @@ public class OnlineFragment extends ListFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // getting listitem index
-//                bundle = new Bundle();
+                bundle = new Bundle();
                 int songIndex = position;
                 System.out.println("song index " + songIndex);
+
+                MyArrayAdapter myAdapter =(MyArrayAdapter) lvSong.getAdapter();
+                ArrayList<Song> songArr = myAdapter.getArr();
+                bundle.putSerializable("songListOnline",songArr);
+                System.out.println("song Arr: " + songArr.size());
                 // Starting new intent
                 txtSearch = edtSearch.getText().toString();
                 bundle.putInt("songIndex", songIndex);
@@ -135,10 +141,10 @@ public class OnlineFragment extends ListFragment {
                     System.out.println("song list size 2 " + songLst.size());
                     MyArrayAdapter mayArr = new MyArrayAdapter(getActivity(), R.layout.list_row, songLst);
                     lvSong.setAdapter(mayArr);
-                    if(songLst != null && songLst.size() > 0) {
-                        System.out.println("song list bundle: " + songLst.size());
-                        bundle.putSerializable("songListOnline",songLst);
-                    }
+//                    if(songLst != null && songLst.size() > 0) {
+//                        System.out.println("song list bundle: " + songLst.size());
+//                        bundle.putSerializable("songListOnline",songLst);
+//                    }
                 }
             });
 

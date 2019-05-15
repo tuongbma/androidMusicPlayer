@@ -111,13 +111,14 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
             typeSearch = bundle.getLong("typeSearch");
             currentSongIndex = bundle.getInt("songIndex");
             textSearch = bundle.getString("txtSearch");
-            songsList = (ArrayList<Song>) bundle.getSerializable("songListOnline");
             System.out.println("song list online: " + songsList.size());
             if(typeSearch == 0) {
                 typeSearch = Constants.SEARCH_TYPE.TITLE;
             }
             //kiem tra xem online hay offline
             if(Constants.MODE.ONLINE.equals(mode)) {
+
+                songsList = (ArrayList<Song>) bundle.getSerializable("songListOnline");
                 playSongOnline(currentSongIndex);
             } else {
                 SongsManager songMng = new SongsManager();
@@ -410,29 +411,32 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
         try {
             mp.reset();
             mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            songManager.readData(textSearch, typeSearch, new SongsManager.MyCallback() {
-                @Override
-                public void onCallback(ArrayList<Song> songList) {
-                    try {
-                        String source = songList.get(songIndex).getSource();
-                        setInfoPlayingSong(source);
-                        mp.setDataSource(source);
-                        mp.prepare();
-                        mp.start();
-                        btnPlay.setImageResource(R.drawable.btn_pause);
-                        // set Progress bar values
-                        songProgressBar.setProgress(0);
-                        songProgressBar.setMax(100);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
+            String source = songsList.get(songIndex).getSource();
+            setInfoPlayingSong(source);
+            mp.setDataSource(source);
+            mp.prepare();
+            mp.start();
+            btnPlay.setImageResource(R.drawable.btn_pause);
+            // set Progress bar values
+            songProgressBar.setProgress(0);
+            songProgressBar.setMax(100);
+//            songManager.readData(textSearch, typeSearch, new SongsManager.MyCallback() {
+//                @Override
+//                public void onCallback(ArrayList<Song> songList) {
+//                    try {
+//
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            });
             updateProgressBar();
 
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

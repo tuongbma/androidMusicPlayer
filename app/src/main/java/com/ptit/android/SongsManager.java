@@ -17,6 +17,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.ptit.android.model.Song;
 
@@ -38,10 +39,13 @@ public class SongsManager {
     private static Long TITLE_SEARCH_TYPE = 1L;
     private static Long ARTST_SEARCH_TYPE = 2L;
     private MediaMetadataRetriever metaRetriver;
+    private DatabaseReference myRef;
+
 
     // Constructor
     public SongsManager() {
         database = FirebaseDatabase.getInstance();
+        myRef = getFireBaseReference();
     }
 
     public DatabaseReference getFireBaseReference() {
@@ -79,8 +83,39 @@ public class SongsManager {
      */
     public void readData(final String text, final Long searchType, final MyCallback myCallback) {
         songList = new ArrayList<Song>();
-        DatabaseReference myRef = getFireBaseReference();
         if (text != null && !text.isEmpty()) {
+
+//            Query query =  myRef.orderByChild("title").startAt(text.toUpperCase()).endAt(text.toLowerCase()+"\uf8ff");
+//            query.addValueEventListener(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+////                        String searchTxt = text.toLowerCase();
+//                        Song s = data.getValue(Song.class);
+//                        songList.add(s);
+////                        String songTitle = s.getTitle();
+////                        String songArtist = s.getArtist();
+////                        if (TITLE_SEARCH_TYPE.equals(searchType)) {
+////                            if (songTitle.toLowerCase().contains(searchTxt)) {
+////                                songList.add(s);
+////                            }
+////                        } else if (ARTST_SEARCH_TYPE.equals(searchType)) {
+////                            if (songArtist.contains(text.toUpperCase())) {
+////                                // Adding each song to SongList
+////                                songList.add(s);
+////                            }
+////                        }
+//                    }
+//                    myCallback.onCallback(songList);
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                }
+//            });
+
+
             myRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

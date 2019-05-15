@@ -71,5 +71,11 @@ public class MyArrayAdapter extends ArrayAdapter<Song> {
         return convertView;
     }
 
+    public ArrayList<Song> getArr() {
+        return arr;
+    }
 
+    public void setArr(ArrayList<Song> arr) {
+        this.arr = arr;
+    }
 }
