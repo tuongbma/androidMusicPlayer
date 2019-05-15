@@ -132,7 +132,6 @@ public class SongsManager {
         Song song = new Song();
         metaRetriver = new MediaMetadataRetriever();
         if (Constants.MODE.ONLINE.equals(mode)) {
-            source = Constants.STORE_FIREBASE_SERVER + source;
             metaRetriver.setDataSource(source, new HashMap<String, String>());
             System.out.println("source" + source);
         } else {

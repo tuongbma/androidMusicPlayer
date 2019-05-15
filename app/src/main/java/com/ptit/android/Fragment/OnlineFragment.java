@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.ptit.android.Constants;
@@ -24,13 +25,14 @@ import com.ptit.android.R;
 import com.ptit.android.SongsManager;
 import com.ptit.android.model.Song;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class OnlineFragment extends ListFragment {
     private String TAG = "FIREBASE";
     private static String STORE_FIREBASE_SERVER = "https://firebasestorage.googleapis.com/v0/b/musicapplication-f21a5.appspot.com/o/";
-    private Button btnSearch;
+    private ImageButton btnSearch;
     private ListView lvSong;
     private EditText edtSearch;
     private ArrayAdapter<String> adapter;
@@ -39,7 +41,9 @@ public class OnlineFragment extends ListFragment {
     private String txtSearch;
     private Long typeSearch;
     private PlayMusicFragment playMusicFragment = new PlayMusicFragment();
-    private Bundle bundle = new Bundle();
+    private Bundle bundle;
+    private Bundle voiceBundle;
+    private ArrayList<Song> songLst = new ArrayList<>();
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -50,34 +54,53 @@ public class OnlineFragment extends ListFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         edtSearch = view.findViewById(R.id.txtSearch);
-
+        btnSearch =(ImageButton) view.findViewById(R.id.btnSearch);
         adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1);
         lvSong = getListView();
         if (typeSearch == null) {
             typeSearch = Constants.SEARCH_TYPE.TITLE;
         }
-        edtSearch.addTextChangedListener(new TextWatcher() {
+        voiceBundle = getArguments();
+        if(voiceBundle != null) {
+            txtSearch = voiceBundle.getString("txtSearch");
+            edtSearch.setText(txtSearch);
+            performSearch(txtSearch);
+            System.out.println("txtSearch speech" + txtSearch);
+        }
+
+        btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                performSearch(edtSearch.getText().toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
+            public void onClick(View v) {
+                String txt = edtSearch.getText().toString();
+                if(txt != null && !txt.isEmpty()) {
+                    performSearch(txt);
+                }
             }
         });
+//        edtSearch.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                performSearch(edtSearch.getText().toString());
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//
+//            }
+//        });
 
         lvSong.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // getting listitem index
+//                bundle = new Bundle();
                 int songIndex = position;
+                System.out.println("song index " + songIndex);
                 // Starting new intent
                 txtSearch = edtSearch.getText().toString();
                 bundle.putInt("songIndex", songIndex);
@@ -104,15 +127,22 @@ public class OnlineFragment extends ListFragment {
                 @Override
                 public void onCallback(ArrayList<Song> songList) {
                     System.out.println("size songlist:" + songList.size());
-                    ArrayList<Song> songLst = new ArrayList<>();
+                    songLst = new ArrayList<>();
                     for (Song song : songList) {
                         Song songBean = songsManager.getInfoSongFromSource(Constants.MODE.ONLINE, song.getSource());
                         songLst.add(songBean);
                     }
+
+                    System.out.println("song list size 2 " + songLst.size());
                     MyArrayAdapter mayArr = new MyArrayAdapter(getActivity(), R.layout.list_row, songLst);
                     lvSong.setAdapter(mayArr);
+                    if(songLst != null && songLst.size() > 0) {
+                        System.out.println("song list bundle: " + songLst.size());
+                        bundle.putSerializable("songListOnline",songLst);
+                    }
                 }
             });
+
         }
 
 }

@@ -4,7 +4,9 @@ import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Song implements Parcelable {
+import java.io.Serializable;
+
+public class Song implements Serializable {
     private String songId;
     private String title;
     private String artist;
@@ -28,17 +30,6 @@ public class Song implements Parcelable {
         linkDownload = in.readString();
     }
 
-    public static final Creator<Song> CREATOR = new Creator<Song>() {
-        @Override
-        public Song createFromParcel(Parcel in) {
-            return new Song(in);
-        }
-
-        @Override
-        public Song[] newArray(int size) {
-            return new Song[size];
-        }
-    };
 
     public String getSongId() {
         return songId;
@@ -96,17 +87,4 @@ public class Song implements Parcelable {
         this.songImage = songImage;
     }
 
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeStringArray(new String[] {this.songId,
-                this.title,
-                this.artist,
-        this.source, this.duration, String.valueOf(this.songImage), this.genre, this.linkDownload});
-    }
 }

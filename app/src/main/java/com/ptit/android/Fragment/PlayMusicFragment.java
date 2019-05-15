@@ -107,6 +107,8 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
             typeSearch = bundle.getLong("typeSearch");
             currentSongIndex = bundle.getInt("songIndex");
             textSearch = bundle.getString("txtSearch");
+            songsList = (ArrayList<Song>) bundle.getSerializable("songListOnline");
+            System.out.println("song list online: " + songsList.size());
             if(typeSearch == 0) {
                 typeSearch = Constants.SEARCH_TYPE.TITLE;
             }
@@ -386,7 +388,7 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
                 @Override
                 public void onCallback(ArrayList<Song> songList) {
                     try {
-                        String source = SERVER_STORAGE + songList.get(songIndex).getSource();
+                        String source = songList.get(songIndex).getSource();
                         setInfoPlayingSong(source);
                         mp.setDataSource(source);
                         mp.prepare();

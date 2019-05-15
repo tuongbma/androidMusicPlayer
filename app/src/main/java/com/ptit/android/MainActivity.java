@@ -14,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
@@ -447,6 +448,19 @@ public class MainActivity<recordingBufferLock> extends AppCompatActivity {
                 if (resultCode == RESULT_OK && data != null) {
                     ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     Log.d("LISTENING ", result.get(0));
+                    String txtSearch = result.get(0);
+                    Bundle bundle = new Bundle();
+                    if(txtSearch != null && !txtSearch.isEmpty()) {
+                        bundle.putString("txtSearch", txtSearch);
+                        OnlineFragment onlineFragment = new OnlineFragment();
+                        onlineFragment.setArguments(bundle);
+                        FragmentManager fragmentManager = MainActivity.fragmentManager;
+                        System.out.println(fragmentManager.getFragments().toString());
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        MainActivity.onlineFragment = onlineFragment;
+                        fragmentTransaction.replace(R.id.fragment_container, onlineFragment, "onlineFragment");
+                        fragmentTransaction.commit();
+                    }
 //                    textView.setText(result.get(0));
 
                 }
