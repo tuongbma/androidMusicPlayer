@@ -42,6 +42,7 @@ public class OfflineFragment extends ListFragment {
     private SongsManager songsManager;
     private String txtSearch;
     private ListView lv;
+    private Bundle voiceBundle;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -55,6 +56,7 @@ public class OfflineFragment extends ListFragment {
         songsManager = new SongsManager();
         // get all songs from sdcard
         askReadPermission();
+
 //        askWritePermission();
         if (songsList.size() == 0) {
             toastMessage("Khong co bai hat nao");
@@ -106,6 +108,14 @@ public class OfflineFragment extends ListFragment {
                 }
             });
         }
+        voiceBundle = getArguments();
+        if(voiceBundle != null) {
+            txtSearch = voiceBundle.getString("txtSearch");
+            edtSearch.setText(txtSearch);
+            performSearch(txtSearch);
+            System.out.println("txtSearch speech" + txtSearch);
+        }
+
     }
 
     private void askReadPermission() {

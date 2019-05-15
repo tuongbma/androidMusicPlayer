@@ -55,18 +55,12 @@ public class OnlineFragment extends ListFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         edtSearch = view.findViewById(R.id.txtSearch);
         btnSearch =(ImageButton) view.findViewById(R.id.btnSearch);
-        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1);
+//        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1);
         lvSong = getListView();
         if (typeSearch == null) {
             typeSearch = Constants.SEARCH_TYPE.TITLE;
         }
-        voiceBundle = getArguments();
-        if(voiceBundle != null) {
-            txtSearch = voiceBundle.getString("txtSearch");
-            edtSearch.setText(txtSearch);
-            performSearch(txtSearch);
-            System.out.println("txtSearch speech" + txtSearch);
-        }
+
 
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override

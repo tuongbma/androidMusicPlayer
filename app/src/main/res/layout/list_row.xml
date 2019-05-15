@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/list_image"
         android:layout_toRightOf="@+id/list_image"
-        android:textColor="#040404"
+        android:textColor="@color/colorPrimaryDark"
         android:typeface="sans"
         android:text="Tìm lại bầu trời"
         android:textSize="15sp"
@@ -29,7 +29,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/title"
-        android:textColor="#343434"
+        android:textColor="@color/colorPrimaryDark"
         android:text="Tuấn Hưng"
         android:textSize="12sp"
         android:layout_marginTop="1dip"
@@ -45,13 +45,6 @@
         android:gravity="right"
         android:layout_marginRight="5dip"
         android:textSize="12sp"
-        android:textColor="#10bcc9"
+        android:textColor="@color/colorPrimaryDark"
         android:textStyle="bold"/>
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/app_name"
-        android:src="@drawable/arrow"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"/>
 </RelativeLayout>

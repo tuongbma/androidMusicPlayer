@@ -22,6 +22,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -71,12 +73,12 @@ public class MainActivity<recordingBufferLock> extends AppCompatActivity {
     private static final int SAMPLE_DURATION_MS = 1000;
     private static final int RECORDING_LENGTH = (int) (SAMPLE_RATE * SAMPLE_DURATION_MS / 1000);
     private static final long AVERAGE_WINDOW_DURATION_MS = 1000;
-    private static final float DETECTION_THRESHOLD = 0.50f;
+    private static final float DETECTION_THRESHOLD = 0.60f;
     private static final int SUPPRESSION_MS = 500;
-    private static final int MINIMUM_COUNT = 3;
+    private static final int MINIMUM_COUNT = 4;
     private static final long MINIMUM_TIME_BETWEEN_SAMPLES_MS = 30;
-    private static final String LABEL_FILENAME = "file:///android_asset/conv_v14.txt";
-    private static final String MODEL_FILENAME = "file:///android_asset/conv_v16.tflite";
+    private static final String LABEL_FILENAME = "file:///android_asset/labels_v2.txt";
+    private static final String MODEL_FILENAME = "file:///android_asset/conv_v25.tflite";
 
 
     // Working variables.
@@ -99,6 +101,7 @@ public class MainActivity<recordingBufferLock> extends AppCompatActivity {
     public static Fragment homeFragment = new HomeFragment();
     public static Fragment personalFragment = new PersonalFragment();
     public static FragmentManager fragmentManager;
+    public static BottomNavigationView navigationView;
     // UI elements.
     private static final int REQUEST_RECORD_AUDIO = 13;
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
@@ -118,9 +121,13 @@ public class MainActivity<recordingBufferLock> extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.main);
-        BottomNavigationView navigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        navigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         navigationView.setOnNavigationItemSelectedListener(navListener);
         lblSeachResult = findViewById(R.id.lblSearchResult);
         fragmentManager = getSupportFragmentManager();
@@ -168,9 +175,9 @@ public class MainActivity<recordingBufferLock> extends AppCompatActivity {
         tfLite.resizeInput(0, new int[]{RECORDING_LENGTH, 1});
 
         // Start the recording and recognition threads.
-//        requestMicrophonePermission();
-//        startRecording();
-//        startRecognition();
+        requestMicrophonePermission();
+        startRecording();
+        startRecognition();
     }
 
 
@@ -202,11 +209,13 @@ public class MainActivity<recordingBufferLock> extends AppCompatActivity {
                 Manifest.permission.READ_EXTERNAL_STORAGE);
         return canRead;
     }
+
     private boolean askWritePermission() {
         boolean canWrite = this.askPermission(REQUEST_ID_WRITE_PERMISSION,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE);
-       return canWrite;
+        return canWrite;
     }
+
     private boolean askRecordPermission() {
         boolean canRecord = this.askPermission(REQUEST_RECORD_AUDIO,
                 Manifest.permission.RECORD_AUDIO);
@@ -434,22 +443,37 @@ public class MainActivity<recordingBufferLock> extends AppCompatActivity {
                 if (resultCode == RESULT_OK && data != null) {
                     ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     Log.d("LISTENING ", result.get(0));
-                    String txtSearch = result.get(0);
+                    String txtSearch = result.get(0).toLowerCase();
                     Bundle bundle = new Bundle();
-                    if(txtSearch != null && !txtSearch.isEmpty()) {
-                        bundle.putString("txtSearch", txtSearch);
-                        OnlineFragment onlineFragment = new OnlineFragment();
-                        onlineFragment.setArguments(bundle);
-                        FragmentManager fragmentManager = MainActivity.fragmentManager;
-                        System.out.println(fragmentManager.getFragments().toString());
-                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                        MainActivity.onlineFragment = onlineFragment;
-                        fragmentTransaction.replace(R.id.fragment_container, onlineFragment, "onlineFragment");
-                        fragmentTransaction.commit();
+                    if (txtSearch != null && !txtSearch.isEmpty()) {
+                        if (txtSearch.contains("pause")) {
+                            ((PlayMusicFragment) playMusicFragment).setCommand("pause");
+                        } else if (txtSearch.contains("next")) {
+                            ((PlayMusicFragment) playMusicFragment).setCommand("next");
+                        } else if (txtSearch.contains("play")) {
+                            ((PlayMusicFragment) playMusicFragment).setCommand("play");
+                        }else {
+                            bundle.putString("txtSearch", txtSearch);
+                            OfflineFragment offlineFragment = new OfflineFragment();
+                            offlineFragment.setArguments(bundle);
+                            FragmentManager fragmentManager = MainActivity.fragmentManager;
+                            System.out.println(fragmentManager.getFragments().toString());
+                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                            MainActivity.offlineFragment = offlineFragment;
+                            fragmentTransaction.replace(R.id.fragment_container, offlineFragment, "offlineFragment");
+                            fragmentTransaction.commit();
+                        }
                     }
 //                    textView.setText(result.get(0));
-
                 }
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                requestMicrophonePermission();
+                startRecording();
+                startRecognition();
                 break;
         }
     }
@@ -475,13 +499,12 @@ public class MainActivity<recordingBufferLock> extends AppCompatActivity {
                                 break;
                             case R.id.actionOffline:
                                 if (!checkIfFragmentExisted("offlineFragment")) {
-                                        loadFragment(offlineFragment, "offlineFragment");
+                                    loadFragment(offlineFragment, "offlineFragment");
                                 }
                                 showHideFragment(offlineFragment, onlineFragment, playMusicFragment, homeFragment, personalFragment);
                                 break;
                             case R.id.actionPlaying:
                                 if (!checkIfFragmentExisted("playMusicFragment")) {
-                                    System.out.println("NOT AĐDD");
                                     loadFragment(playMusicFragment, "playMusicFragment");
                                 }
                                 showHideFragment(playMusicFragment, onlineFragment, offlineFragment, homeFragment, personalFragment);
@@ -513,15 +536,20 @@ public class MainActivity<recordingBufferLock> extends AppCompatActivity {
                 .commit();
     }
 
-    public boolean checkIfFragmentExisted(String fragmentTag){
+    public boolean checkIfFragmentExisted(String fragmentTag) {
         Fragment fragment = fragmentManager.findFragmentByTag(fragmentTag);
         if (fragment == null) {
             return false;
-        }
-        else{
+        } else {
             return true;
         }
     }
 
+    public BottomNavigationView getNavigationView() {
+        return navigationView;
+    }
 
+    public void setNavigationView(BottomNavigationView navigationView) {
+        this.navigationView = navigationView;
+    }
 }

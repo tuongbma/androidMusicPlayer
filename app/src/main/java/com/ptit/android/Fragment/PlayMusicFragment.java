@@ -17,6 +17,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -25,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ptit.android.Constants;
+import com.ptit.android.MainActivity;
 import com.ptit.android.R;
 import com.ptit.android.ShakeListener;
 import com.ptit.android.SongsManager;
@@ -53,6 +56,9 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
     private TextView songCurrentDurationLabel;
     private TextView songTotalDurationLabel;
     private ImageView albumPic;
+
+    public String command = null;
+
     // Media Player
     private MediaPlayer mp;
     // Handler to update UI timer, progress bar etc,.
@@ -62,7 +68,7 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
     private Utilities utils;
     private int seekForwardTime = 5000; // 5000 milliseconds
     private int seekBackwardTime = 5000; // 5000 milliseconds
-    private int currentSongIndex = 0;
+    private int currentSongIndex = -1;
     private String textSearch;
     private boolean isShuffle = false;
     private boolean isRepeat = false;
@@ -95,7 +101,9 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
         songCurrentDurationLabel = (TextView) v.findViewById(R.id.songCurrentDurationLabel);
         songTotalDurationLabel = (TextView) v.findViewById(R.id.songTotalDurationLabel);
         albumPic = v.findViewById(R.id.albumPic);
-
+        Animation aniRotate = AnimationUtils.loadAnimation(getActivity(),R.anim.rotate);
+        albumPic.startAnimation(aniRotate);
+        MainActivity.navigationView.setSelectedItemId(R.id.actionPlaying);
         // Mediaplayer
         mp = new MediaPlayer();
         songManager = new SongsManager();
@@ -131,6 +139,26 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
 
         } catch (NullPointerException e){
             Toast.makeText(getActivity(), "Không có bài hát nào được phát", Toast.LENGTH_SHORT).show();
+        }
+
+        if (currentSongIndex == -1){
+            btnPlay.setEnabled(false);
+            btnNext.setEnabled(false);
+            btnPrevious.setEnabled(false);
+            btnShuffle.setEnabled(false);
+            btnRepeat.setEnabled(false);
+            btnBackward.setEnabled(false);
+            btnForward.setEnabled(false);
+            btnBackward.setEnabled(false);
+        } else{
+            btnPlay.setEnabled(true);
+            btnNext.setEnabled(true);
+            btnPrevious.setEnabled(true);
+            btnShuffle.setEnabled(true);
+            btnRepeat.setEnabled(true);
+            btnBackward.setEnabled(true);
+            btnForward.setEnabled(true);
+            btnBackward.setEnabled(true);
         }
 
         final Vibrator vibe = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
@@ -172,20 +200,25 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
             @Override
             public void onClick(View arg0) {
                 // check for already playing
-                if (mp.isPlaying()) {
-                    if (mp != null) {
-                        mp.pause();
-                        // Changing button image to play button
-                        btnPlay.setImageResource(R.drawable.btn_play);
+                try{
+                    if (mp.isPlaying()) {
+                        if (mp != null) {
+                            mp.pause();
+                            // Changing button image to play button
+                            btnPlay.setImageResource(R.drawable.btn_play);
+                        }
+                    } else {
+                        // Resume song
+                        if (mp != null) {
+                            mp.start();
+                            // Changing button image to pause button
+                            btnPlay.setImageResource(R.drawable.btn_pause);
+                        }
                     }
-                } else {
-                    // Resume song
-                    if (mp != null) {
-                        mp.start();
-                        // Changing button image to pause button
-                        btnPlay.setImageResource(R.drawable.btn_pause);
-                    }
+                } catch (Exception e){
+                    Toast.makeText(getActivity(), "Không có bài hát để chạy",Toast.LENGTH_SHORT);
                 }
+
 
             }
         });
@@ -468,6 +501,8 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
      */
     public void updateProgressBar() {
         mHandler.postDelayed(mUpdateTimeTask, 100);
+
+
     }
 
     public void setInfoPlayingSong(String source) {
@@ -507,10 +542,64 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
 
                 // Running this thread after 100 milliseconds
                 mHandler.postDelayed(this, 100);
+
+                if (command != null){
+                    System.out.println("CMD IN PLAY MUSIC: " + command);
+                    switch (command){
+                        case "pause":
+                            if (mp.isPlaying()) {
+                                if (mp != null) {
+                                    mp.pause();
+                                    // Changing button image to play button
+                                    btnPlay.setImageResource(R.drawable.btn_play);
+                                }
+                            } else {
+                                // Resume song
+                                if (mp != null) {
+                                    mp.start();
+                                    // Changing button image to pause button
+                                    btnPlay.setImageResource(R.drawable.btn_pause);
+                                }
+                            }
+                            break;
+                        case "next":
+                            System.out.println("VO NEXT ROI");
+                            if(Constants.MODE.ONLINE.equals(mode)) {
+                                if (currentSongIndex < (songsList.size() - 1)) {
+                                    playSongOnline(currentSongIndex + 1);
+                                    currentSongIndex = currentSongIndex + 1;
+                                } else {
+                                    // play first song
+                                    playSongOnline(0);
+                                    currentSongIndex = 0;
+                                }
+                            } else {
+                                if (currentSongIndex < (songsList.size() - 1)) {
+                                    playSongOffline(currentSongIndex + 1);
+                                    currentSongIndex = currentSongIndex + 1;
+                                } else {
+                                    // play first song
+                                    playSongOffline(0);
+                                    currentSongIndex = 0;
+                                }
+                            }
+                            break;
+                        case "play":
+                                // Resume song
+                                if (mp != null) {
+                                    mp.start();
+                                    // Changing button image to pause button
+                                    btnPlay.setImageResource(R.drawable.btn_pause);
+                                } else{
+                                    playSongOffline(0);
+                                }
+
+                    }
+                }
+                command = null;
             } catch (Exception e){
 
             }
-
         }
     };
 
@@ -566,14 +655,19 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
             playSongOffline(currentSongIndex);
         } else {
             // no repeat or shuffle ON - play next song
-            if (currentSongIndex < (songsList.size() - 1)) {
-                playSongOffline(currentSongIndex + 1);
-                currentSongIndex = currentSongIndex + 1;
-            } else {
-                // play first song
-                playSongOffline(0);
-                currentSongIndex = 0;
+            try{
+                if (currentSongIndex < (songsList.size() - 1)) {
+                    playSongOffline(currentSongIndex + 1);
+                    currentSongIndex = currentSongIndex + 1;
+                } else {
+                    // play first song
+                    playSongOffline(0);
+                    currentSongIndex = 0;
+                }
+            } catch (Exception e){
+                Toast.makeText(getActivity(), "Không có bài hát nào để chạy", Toast.LENGTH_SHORT);
             }
+
         }
     }
 
@@ -594,5 +688,13 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
     public void onDestroy() {
         super.onDestroy();
         mp.release();
+    }
+
+    public String getCommand() {
+        return command;
+    }
+
+    public void setCommand(String command) {
+        this.command = command;
     }
 }
