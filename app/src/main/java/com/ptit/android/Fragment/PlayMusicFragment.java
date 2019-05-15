@@ -1,6 +1,8 @@
 package com.ptit.android.Fragment;
 
+import android.app.DownloadManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,12 +10,15 @@ import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +36,7 @@ import com.ptit.android.SongsManager;
 import com.ptit.android.Utilities;
 import com.ptit.android.model.Song;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,6 +51,7 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
     private ImageButton btnNext;
     private ImageButton btnPrevious;
     private ImageButton btnPlaylist;
+    private ImageButton btnDownload;
     private ImageButton btnRepeat;
     private ImageButton btnShuffle;
     private SongsManager songManager;
@@ -71,6 +78,8 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
     private ArrayList<HashMap<String, String>> songsListOnline = new ArrayList<HashMap<String, String>>();
     private ArrayList<Song> songsList = new ArrayList<Song>();
     private ShakeListener mShaker;
+    private DownloadManager downloadManager;
+    private AlertDialog.Builder builder;
 
     @Nullable
     @Override
@@ -88,6 +97,7 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
         btnNext = (ImageButton) v.findViewById(R.id.btnNext);
         btnPrevious = (ImageButton) v.findViewById(R.id.btnPrevious);
         btnPlaylist = (ImageButton) v.findViewById(R.id.btnPlaylist);
+        btnDownload = (ImageButton) v.findViewById(R.id.btnDownload);
         btnRepeat = (ImageButton) v.findViewById(R.id.btnRepeat);
         btnShuffle = (ImageButton) v.findViewById(R.id.btnShuffle);
         songProgressBar = (SeekBar) v.findViewById(R.id.songProgressBar);
@@ -341,6 +351,33 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
                 }
             }
         });
+        if(Constants.MODE.ONLINE.equals(mode)) {
+            btnDownload.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    builder = new AlertDialog.Builder(getActivity());
+                    Song song = songsList.get(currentSongIndex);
+//                    builder.setTitle("Confirm dialog demo !");
+                    builder.setMessage("Do you want to download " + song.getTitle() +"?");
+                    builder.setCancelable(false);
+                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            downloadFile();
+                        }
+                    });
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    });
+                    builder.show();
+                }
+            });
+        }
+
+
+
 
 //        /**
 //         * Button Click event for Play list click event
@@ -365,6 +402,25 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
 ////				startActivity(i);
 //            }
 //        });
+    }
+
+    public void downloadFile() {
+        Song song = songsList.get(currentSongIndex);
+        File direct = new File(Environment.getExternalStorageDirectory()
+                + "/Download");
+
+        if (!direct.exists()) {
+            direct.mkdirs();
+        }
+        downloadManager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+        Uri uri = Uri.parse(song.getSource());
+        DownloadManager.Request request = new DownloadManager.Request(uri);
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI
+                | DownloadManager.Request.NETWORK_MOBILE);
+        request.setTitle(song.getTitle());
+        request.setDestinationInExternalPublicDir("/Download", song.getTitle() + ".mp3");
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        downloadManager.enqueue(request);
     }
 
     @Override
