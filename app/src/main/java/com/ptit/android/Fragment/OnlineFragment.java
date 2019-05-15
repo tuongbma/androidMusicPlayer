@@ -109,18 +109,19 @@ public class OnlineFragment extends ListFragment {
                 System.out.println("song Arr: " + songArr.size());
                 // Starting new intent
                 txtSearch = edtSearch.getText().toString();
-                bundle = new Bundle();
+
                 bundle.putInt("songIndex", songIndex);
                 bundle.putString("txtSearch", txtSearch);
                 bundle.putLong("MODE", Constants.MODE.ONLINE);
                 bundle.putLong("typeSearch", Constants.SEARCH_TYPE.TITLE);
+
                 playMusicFragment = new PlayMusicFragment();
                 playMusicFragment.setArguments(bundle);
                 FragmentManager fragmentManager = MainActivity.fragmentManager;
                 System.out.println(fragmentManager.getFragments().toString());
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 MainActivity.playMusicFragment = playMusicFragment;
-                fragmentTransaction.remove(fragmentManager.findFragmentByTag("playMusicFragment"));
+//                fragmentTransaction.remove(fragmentManager.findFragmentByTag("playMusicFragment"));
                 fragmentTransaction.replace(R.id.fragment_container, playMusicFragment, "playMusicFragment");
                 fragmentTransaction.commit();
             }

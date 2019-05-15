@@ -111,6 +111,7 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
             typeSearch = bundle.getLong("typeSearch");
             currentSongIndex = bundle.getInt("songIndex");
             textSearch = bundle.getString("txtSearch");
+
             System.out.println("song list online: " + songsList.size());
             if(typeSearch == 0) {
                 typeSearch = Constants.SEARCH_TYPE.TITLE;
@@ -242,7 +243,14 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
             public void onClick(View arg0) {
                 // check if next song is there or not
                 if(Constants.MODE.ONLINE.equals(mode)) {
-                    playSongOffline(currentSongIndex);
+                    if (currentSongIndex < (songsList.size() - 1)) {
+                        playSongOnline(currentSongIndex + 1);
+                        currentSongIndex = currentSongIndex + 1;
+                    } else {
+                        // play first song
+                        playSongOnline(0);
+                        currentSongIndex = 0;
+                    }
                 } else {
                     if (currentSongIndex < (songsList.size() - 1)) {
                         playSongOffline(currentSongIndex + 1);
