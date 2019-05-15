@@ -414,7 +414,7 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
                 @Override
                 public void onCallback(ArrayList<Song> songList) {
                     try {
-                        String source = SERVER_STORAGE + songList.get(songIndex).getSource();
+                        String source = songList.get(songIndex).getSource();
                         setInfoPlayingSong(source);
                         mp.setDataSource(source);
                         mp.prepare();
