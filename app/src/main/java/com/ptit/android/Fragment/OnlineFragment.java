@@ -61,7 +61,7 @@ public class OnlineFragment extends ListFragment {
         if (typeSearch == null) {
             typeSearch = Constants.SEARCH_TYPE.TITLE;
         }
-
+        MainActivity.navigationView.setSelectedItemId(R.id.actionOnline);
 
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override

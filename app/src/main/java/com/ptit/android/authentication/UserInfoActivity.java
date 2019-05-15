@@ -45,9 +45,9 @@ public class UserInfoActivity extends AppCompatActivity {
         setContentView(R.layout.user_info_activity);
 
         txtPhone = (TextView) findViewById(R.id.txtPhone);
-        txtBirthday = (TextView) findViewById(R.id.birthday);
-        txtName = (TextView) findViewById(R.id.name);
-        txtEmail = (TextView) findViewById(R.id.songTitle);
+        txtBirthday = (TextView) findViewById(R.id.txtBirthday);
+        txtName = (TextView) findViewById(R.id.txtName);
+        txtEmail = (TextView) findViewById(R.id.txtEmail);
         btnSignOut =(Button) findViewById(R.id.btn_signout);
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        toolbar.setTitle(getString(R.string.app_name));
