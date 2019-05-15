@@ -90,13 +90,12 @@ public class OnlineFragment extends ListFragment {
                 System.out.println(fragmentManager.getFragments().toString());
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 MainActivity.playMusicFragment = playMusicFragment;
-                fragmentTransaction.replace(R.id.fragment_container, playMusicFragment, "playMusicFragment");
+                fragmentTransaction.remove(fragmentManager.findFragmentByTag("playMusicFragment"));
+                fragmentTransaction.add(R.id.fragment_container, playMusicFragment, "playMusicFragment");
                 fragmentTransaction.commit();
             }
         });
     }
-
-
 
     public void performSearch(String txtSearch) {
         final SongsManager songsManager = new SongsManager();

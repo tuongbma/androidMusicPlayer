@@ -7,6 +7,9 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.widget.EditText;
+import android.widget.ListAdapter;
+import android.widget.SimpleAdapter;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -16,8 +19,11 @@ import com.google.firebase.database.ValueEventListener;
 import com.ptit.android.model.Song;
 
 import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
-import java.net.URI;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,23 +52,20 @@ public class SongsManager {
      */
     public ArrayList<Song> getOfflineList() {
         // SDCard Path
-        String MEDIA_PATH = new String( "/emulated/0/Download/");
-        Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        System.out.println("URI"  + musicUri);
-        System.out.println("EXTERNAL PATH: " + Environment.getExternalStorageDirectory());
-        System.out.println(Environment.getExternalStorageDirectory().listFiles());
-        System.out.println("MEDIA PATH" + MEDIA_PATH);
+//        String MEDIA_PATH = new String("/sdcard/Download/");
+//        System.out.println(MEDIA_PATH);
         songList = new ArrayList<>();
-        File home = new File(MEDIA_PATH);
-        try {
-                for (File file : home.listFiles(new FileExtensionFilter())) {
-                    String filePath = file.getAbsolutePath().replaceAll("\\s+", "");
-                    Song bean = getInfoSongFromSource(Constants.MODE.OFFLINE, filePath);
-                    songList.add(bean);
-            }
-        } catch (NullPointerException e) {
-
+//        File home = new File(MEDIA_PATH);
+//        System.out.println("size: " + home.listFiles(new FileExtensionFilter()).length);
+        System.out.println("LENGTH" + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).listFiles().length);
+//        if (home.listFiles(new FileExtensionFilter()).length > 0) {
+        for (File file : Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).listFiles(new FileExtensionFilter())) {
+            String filePath = file.getAbsolutePath().replaceAll("\\s+", "");
+            System.out.println("FILEPATH" + filePath);
+            Song bean = getInfoSongFromSource(Constants.MODE.OFFLINE, filePath);
+            songList.add(bean);
         }
+//        }
         // return songs list array
         return songList;
     }
@@ -136,6 +139,14 @@ public class SongsManager {
             metaRetriver.setDataSource(source, new HashMap<String, String>());
             System.out.println("source" + source);
         } else {
+            System.out.println("SOURCE: " + source);
+            try (FileInputStream is = new FileInputStream(source)) {
+                FileDescriptor fd = is.getFD();
+            } catch (FileNotFoundException fileEx) {
+                System.out.println("FILE NOT FOUND");
+            } catch (IOException ioEx) {
+                System.out.println("IO Exception");
+            }
             metaRetriver.setDataSource(source);
         }
 
