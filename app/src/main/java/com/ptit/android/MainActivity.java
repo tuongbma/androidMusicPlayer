@@ -447,15 +447,20 @@ public class MainActivity<recordingBufferLock> extends AppCompatActivity {
                     Log.d("LISTENING ", result.get(0));
                     String txtSearch = result.get(0).toLowerCase();
                     Bundle bundle = new Bundle();
-                    if (txtSearch != null && !txtSearch.isEmpty()) {
+                    if (!txtSearch.contains("search")) {
                         if (txtSearch.contains("pause")) {
                             ((PlayMusicFragment) playMusicFragment).setCommand("pause");
                         } else if (txtSearch.contains("next")) {
                             ((PlayMusicFragment) playMusicFragment).setCommand("next");
                         } else if (txtSearch.contains("play")) {
+                            if (!checkIfFragmentExisted("playMusicFragment")) {
+                                loadFragment(playMusicFragment, "playMusicFragment");
+                            }
+                            System.out.println("PLAY NAY");
                             ((PlayMusicFragment) playMusicFragment).setCommand("play");
-                        }else {
-                            bundle.putString("txtSearch", txtSearch);
+                        }
+                    } else {
+                            bundle.putString("txtSearch", txtSearch.split("search")[1].trim());
                             OfflineFragment offlineFragment = new OfflineFragment();
                             offlineFragment.setArguments(bundle);
                             FragmentManager fragmentManager = MainActivity.fragmentManager;
@@ -465,7 +470,6 @@ public class MainActivity<recordingBufferLock> extends AppCompatActivity {
                             fragmentTransaction.replace(R.id.fragment_container, offlineFragment, "offlineFragment");
                             fragmentTransaction.commit();
                         }
-                    }
 //                    textView.setText(result.get(0));
                 }
                 try {

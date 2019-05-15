@@ -57,6 +57,8 @@ public class OfflineFragment extends ListFragment {
         // get all songs from sdcard
         askReadPermission();
 
+        MainActivity.navigationView.setSelectedItemId(R.id.actionOffline);
+
 //        askWritePermission();
         if (songsList.size() == 0) {
             toastMessage("Khong co bai hat nao");

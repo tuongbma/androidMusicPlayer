@@ -57,6 +57,7 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
     private ImageButton btnDownload;
     private ImageButton btnRepeat;
     private ImageButton btnShuffle;
+    private ImageView btnLike;
     private SongsManager songManager;
     private SeekBar songProgressBar;
     private TextView songTitleLabel;
@@ -106,6 +107,7 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
         btnDownload = (ImageButton) v.findViewById(R.id.btnDownload);
         btnRepeat = (ImageButton) v.findViewById(R.id.btnRepeat);
         btnShuffle = (ImageButton) v.findViewById(R.id.btnShuffle);
+        btnLike = v.findViewById(R.id.btnLike);
         songProgressBar = (SeekBar) v.findViewById(R.id.songProgressBar);
         songTitleLabel = (TextView) v.findViewById(R.id.songTitle);
         songCurrentDurationLabel = (TextView) v.findViewById(R.id.songCurrentDurationLabel);
@@ -136,7 +138,6 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
             }
             //kiem tra xem online hay offline
             if(Constants.MODE.ONLINE.equals(mode)) {
-
                 songsList = (ArrayList<Song>) bundle.getSerializable("songListOnline");
                 playSongOnline(currentSongIndex);
             } else {
@@ -160,6 +161,7 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
             btnBackward.setEnabled(false);
             btnForward.setEnabled(false);
             btnBackward.setEnabled(false);
+            btnLike.setEnabled(false);
         } else{
             btnPlay.setEnabled(true);
             btnNext.setEnabled(true);
@@ -169,6 +171,7 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
             btnBackward.setEnabled(true);
             btnForward.setEnabled(true);
             btnBackward.setEnabled(true);
+            btnLike.setEnabled(true);
         }
 
         final Vibrator vibe = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
@@ -230,6 +233,15 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
                 }
 
 
+            }
+        });
+
+        btnLike.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                // check for already playing
+                btnLike.setImageResource(R.drawable.pressed_btn_like);
             }
         });
 
@@ -641,13 +653,19 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
                             }
                             break;
                         case "play":
+                            System.out.println("DO PLAY ROI");
                                 // Resume song
                                 if (mp != null) {
+                                    System.out.println("OFFLINE NULL");
                                     mp.start();
                                     // Changing button image to pause button
                                     btnPlay.setImageResource(R.drawable.btn_pause);
                                 } else{
-                                    playSongOffline(0);
+                                    System.out.println("OFFLINE TIME");
+                                    songsList = songManager.getOfflineList();
+                                    Random randomGenerator = new Random();
+                                    int randomInt = randomGenerator.nextInt(songsList.size()) + 1;
+                                    playSongOffline(randomInt);
                                 }
 
                     }
