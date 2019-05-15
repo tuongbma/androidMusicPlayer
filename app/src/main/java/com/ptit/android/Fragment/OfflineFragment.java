@@ -1,8 +1,11 @@
 package com.ptit.android.Fragment;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
@@ -24,14 +27,18 @@ import com.ptit.android.R;
 import com.ptit.android.SongsManager;
 import com.ptit.android.model.Song;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class OfflineFragment extends ListFragment {
+    private static final int REQUEST_ID_READ_PERMISSION = 100;
+    private static final int REQUEST_ID_WRITE_PERMISSION = 200;
     // Songs list
     public ArrayList<Song> songsList = new ArrayList<>();
     private PlayMusicFragment playMusicFragment = new PlayMusicFragment();
     private Bundle bundle = new Bundle();
     private EditText edtSearch;
+    private File[] listFiles;
     private SongsManager songsManager;
     private String txtSearch;
     private ListView lv;
@@ -47,7 +54,8 @@ public class OfflineFragment extends ListFragment {
         edtSearch = view.findViewById(R.id.txtSearch);
         songsManager = new SongsManager();
         // get all songs from sdcard
-        this.songsList = songsManager.getOfflineList();
+        askReadPermission();
+        askWritePermission();
         if (songsList.size() == 0) {
             toastMessage("Khong co bai hat nao");
         } else {
@@ -99,6 +107,66 @@ public class OfflineFragment extends ListFragment {
             });
         }
     }
+
+    private void askReadPermission() {
+        boolean canRead = this.askPermission(REQUEST_ID_READ_PERMISSION,
+                Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (canRead) {
+//            this.songsList = songsManager.getOfflineList();
+//            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBB");
+        }
+    }
+    private void askWritePermission() {
+        boolean canWrite = this.askPermission(REQUEST_ID_WRITE_PERMISSION,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        //
+        if (canWrite) {
+            this.songsList = songsManager.getOfflineList();
+            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBB");
+        }
+    }
+
+    private boolean askPermission(int requestId, String permissionName) {
+        if (android.os.Build.VERSION.SDK_INT >= 23) {
+            // Check if we have permission
+            int permission = ActivityCompat.checkSelfPermission(getActivity(), permissionName);
+            if (permission != PackageManager.PERMISSION_GRANTED) {
+                // If don't have permission so prompt the user.
+                this.requestPermissions(
+                        new String[]{permissionName},
+                        requestId
+                );
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        //
+        // Note: If request is cancelled, the result arrays are empty.
+        if (grantResults.length > 0) {
+            switch (requestCode) {
+                case REQUEST_ID_READ_PERMISSION: {
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        Toast.makeText(getActivity(), "Read Permission Allowed!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                case REQUEST_ID_WRITE_PERMISSION: {
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        Toast.makeText(getActivity(), "Write Permission Allowed!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        } else {
+            Toast.makeText(getActivity(), "Permission Cancelled!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     public void performSearch(String txtSearch) {
         ArrayList<Song> songSearch = new ArrayList<>();
         songsManager = new SongsManager();

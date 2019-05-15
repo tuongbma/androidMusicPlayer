@@ -160,7 +160,7 @@ public class PlayMusicActivity extends Activity implements OnCompletionListener,
             typeSearch = intent.getExtras().getLong("typeSearch");
             playSongOnline(currentSongIndex);
         } else if(mode != null && Constants.MODE.OFFLINE.equals(mode)) {
-            songsListOffline = songManager.getOfflineList();
+//            songsListOffline = songManager.getOfflineList();
             songsList = songsListOffline;
             if(songsList.size() > 0) {
                 playSong(0);

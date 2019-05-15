@@ -1,5 +1,6 @@
 package com.ptit.android;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -52,6 +54,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 
 public class MainActivity<recordingBufferLock> extends AppCompatActivity {
+    private static final int REQUEST_ID_READ_PERMISSION = 100;
+    private static final int REQUEST_ID_WRITE_PERMISSION = 200;
 
     private Button btnOffline;
     private ImageButton btnOnline;
@@ -71,6 +75,7 @@ public class MainActivity<recordingBufferLock> extends AppCompatActivity {
     private static final long MINIMUM_TIME_BETWEEN_SAMPLES_MS = 30;
     private static final String LABEL_FILENAME = "file:///android_asset/conv_v14.txt";
     private static final String MODEL_FILENAME = "file:///android_asset/conv_v16.tflite";
+
 
     // Working variables.
     short[] recordingBuffer = new short[RECORDING_LENGTH];
@@ -119,56 +124,11 @@ public class MainActivity<recordingBufferLock> extends AppCompatActivity {
         lblSeachResult = findViewById(R.id.lblSearchResult);
         fragmentManager = getSupportFragmentManager();
         loadFragment(homeFragment, "homeFragment");
-//        fragmentManager.beginTransaction().add(R.id.fragment_container, onlineFragment)
-//                .add(R.id.fragment_container, offlineFragment)
-//                .add(R.id.fragment_container, playMusicFragment)
-//                .commit();
+
         btnOnline = (ImageButton) findViewById(R.id.btnSearch);
 //        btnOffline = (Button) findViewById(R.id.btnOffline);
         edtSearch = (EditText) findViewById(R.id.txtSearch);
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
-//        lvSearch = getListView();
-//        lvSearch.setAdapter(adapter);
-
-//
-//        edtSearch.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                performSearch(edtSearch.getText().toString());
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//
-//            }
-//        });
-
-
-//        lvSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                // getting listitem index
-//                int songIndex = position;
-//                // Starting new intent
-//                Intent in = new Intent(MainActivity.this, PlayMusicActivity.class);
-//                in.addFlags(
-//                        Intent.FLAG_ACTIVITY_SINGLE_TOP
-//                );
-//                // Sending songIndex to PlayMusicActivity
-//                txtSearch = edtSearch.getText().toString();
-//                in.putExtra("songOnlineIndex", songIndex);
-//                in.putExtra("txtSearch", txtSearch);
-//                in.putExtra("MODE", Constants.MODE.ONLINE);
-//                in.putExtra("typeSearch", Constants.SEARCH_TYPE.TITLE);
-//                startActivity(in);
-//                finish();
-//            }
-//        });
 
         String actualLabelFilename = LABEL_FILENAME.split("file:///android_asset/", -1)[1];
         Log.i(LOG_TAG, "Reading labels from: " + actualLabelFilename);
@@ -213,44 +173,69 @@ public class MainActivity<recordingBufferLock> extends AppCompatActivity {
     }
 
 
-//    public void performSearch(String txtSearch) {
-//        final SongsManager songsManager = new SongsManager();
-//        songsManager.readData(txtSearch, Constants.SEARCH_TYPE.TITLE, new SongsManager.MyCallback() {
-//            @Override
-//            public void onCallback(ArrayList<Song> songList) {
-//                System.out.println("size songlist:" + songList.size());
-////                ListAdapter adapter = new SimpleAdapter(MainActivity.this, songList,
-////                        R.layout.playlist_item, new String[]{"songTitle"}, new int[]{
-////                        R.id.songTitle});
-////                setListAdapter(adapter);
-//                ArrayList<Song> songLst = new ArrayList<>();
-//                for (Song song : songList) {
-//                    Song songBean = songsManager.getInfoSongFromSource(song.getSource());
-//                    songLst.add(songBean);
-//                }
-//                MyArrayAdapter mayArr = new MyArrayAdapter(MainActivity.this, R.layout.list_row, songLst);
-//                lvSong.setAdapter(mayArr);
-//            }
-//
-//        });
+//    private void requestMicrophonePermission() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            requestPermissions(
+//                    new String[]{android.Manifest.permission.RECORD_AUDIO}, REQUEST_RECORD_AUDIO);
+//        }
 //    }
 
-
-    private void requestMicrophonePermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestPermissions(
-                    new String[]{android.Manifest.permission.RECORD_AUDIO}, REQUEST_RECORD_AUDIO);
+    private boolean askPermission(int requestId, String permissionName) {
+        if (android.os.Build.VERSION.SDK_INT >= 23) {
+            // Check if we have permission
+            int permission = ActivityCompat.checkSelfPermission(this, permissionName);
+            if (permission != PackageManager.PERMISSION_GRANTED) {
+                // If don't have permission so prompt the user.
+                this.requestPermissions(
+                        new String[]{permissionName},
+                        requestId
+                );
+                return false;
+            }
         }
+        return true;
+    }
+
+    private boolean askReadPermission() {
+        boolean canRead = this.askPermission(REQUEST_ID_READ_PERMISSION,
+                Manifest.permission.READ_EXTERNAL_STORAGE);
+        return canRead;
+    }
+    private boolean askWritePermission() {
+        boolean canWrite = this.askPermission(REQUEST_ID_WRITE_PERMISSION,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+       return canWrite;
+    }
+    private boolean askRecordPermission() {
+        boolean canRecord = this.askPermission(REQUEST_RECORD_AUDIO,
+                Manifest.permission.RECORD_AUDIO);
+        return canRecord;
     }
 
     @Override
     public void onRequestPermissionsResult(
             int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == REQUEST_RECORD_AUDIO
-                && grantResults.length > 0
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            startRecording();
-            startRecognition();
+
+        if (grantResults.length > 0) {
+            switch (requestCode) {
+                case REQUEST_ID_READ_PERMISSION: {
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    }
+                }
+                case REQUEST_ID_WRITE_PERMISSION: {
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    }
+                }
+                case REQUEST_RECORD_AUDIO: {
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        startRecording();
+                        startRecognition();
+                    }
+                }
+            }
+        } else {
+            Toast.makeText(this, "Permission Cancelled!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -489,7 +474,7 @@ public class MainActivity<recordingBufferLock> extends AppCompatActivity {
                                 break;
                             case R.id.actionOffline:
                                 if (!checkIfFragmentExisted("offlineFragment")) {
-                                    loadFragment(offlineFragment, "offlineFragment");
+                                        loadFragment(offlineFragment, "offlineFragment");
                                 }
                                 showHideFragment(offlineFragment, onlineFragment, playMusicFragment, homeFragment, personalFragment);
                                 break;
@@ -536,4 +521,6 @@ public class MainActivity<recordingBufferLock> extends AppCompatActivity {
             return true;
         }
     }
+
+
 }
