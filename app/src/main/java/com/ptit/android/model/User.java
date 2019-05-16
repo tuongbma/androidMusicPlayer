@@ -2,16 +2,18 @@ package com.ptit.android.model;
 
 public class User {
     public String name, phone, birthday, email, id;
+    private String songId;
     public User() {
 
     }
 
-    public User(String id, String name, String phone, String birthday, String email) {
+    public User(String id, String name, String phone, String birthday, String email, String songId) {
         this.id = id;
         this.name = name;
         this.phone = phone;
         this.birthday = birthday;
         this.email = email;
+        this.songId = songId;
     }
 
     public String getEmail() {
@@ -63,5 +65,13 @@ public class User {
                 ", email='" + email + '\'' +
                 ", id='" + id + '\'' +
                 '}';
+    }
+
+    public String getSongId() {
+        return songId;
+    }
+
+    public void setSongId(String songId) {
+        this.songId = songId;
     }
 }

@@ -3,7 +3,7 @@ package com.ptit.android.Fragment;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Vibrator;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -32,8 +33,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.ptit.android.Constants;
 import com.ptit.android.MainActivity;
 import com.ptit.android.R;
@@ -45,6 +50,7 @@ import com.ptit.android.model.Song;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -479,31 +485,31 @@ public class PlayMusicFragment extends Fragment implements OnCompletionListener,
         downloadManager.enqueue(request);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 100) { // play offline
-            try{
-                currentSongIndex = data.getExtras().getInt("songOfflineIndex");
-                playSongOffline(currentSongIndex);
-            } catch (NullPointerException ex){
-
-            }
-            // play selected song
-
-        }
-        if (requestCode == Constants.MODE.ONLINE.intValue()) { // play online
-            try{
-                textSearch = data.getExtras().getString("txtSearch");
-                currentSongIndex = data.getExtras().getInt("songOnlineIndex");
-                playSongOnline(currentSongIndex);
-            } catch (NullPointerException ex){
-
-            }
-            // play selected song
-
-        }
-    }
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == 100) { // play offline
+//            try{
+//                currentSongIndex = data.getExtras().getInt("songOfflineIndex");
+//                playSongOffline(currentSongIndex);
+//            } catch (NullPointerException ex){
+//
+//            }
+//            // play selected song
+//
+//        }
+//        if (requestCode == Constants.MODE.ONLINE.intValue()) { // play online
+//            try{
+//                textSearch = data.getExtras().getString("txtSearch");
+//                currentSongIndex = data.getExtras().getInt("songOnlineIndex");
+//                playSongOnline(currentSongIndex);
+//            } catch (NullPointerException ex){
+//
+//            }
+//            // play selected song
+//
+//        }
+//    }
 
     /**
      * Function to play a song

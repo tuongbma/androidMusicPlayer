@@ -47,13 +47,6 @@ public class PersonalFragment extends Fragment {
         txtName = (TextView) view.findViewById(R.id.txtName);
         txtEmail = (TextView) view.findViewById(R.id.txtEmail);
         btnSignOut =(Button) view.findViewById(R.id.btn_signout);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        toolbar.setTitle(getString(R.string.app_name));
-//        setSupportActionBar(toolbar);
-
-        //get firebase auth instance
-        auth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance();
         //get firebase auth instance
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -73,18 +66,21 @@ public class PersonalFragment extends Fragment {
             dbRef.child(uID).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    System.out.println("SNAP SHOT : " + dataSnapshot.toString());
-                    User u = dataSnapshot.getValue(User.class);
-                    System.out.println("uSSERRRR: " + u.getEmail());
-                    txtPhone.setText(u.getPhone());
-                    txtEmail.setText(u.getEmail());
-                    txtBirthday.setText(u.getBirthday());
-                    txtName.setText(u.getName());
+                    if(dataSnapshot.getValue() != null) {
+                        System.out.println("SNAP SHOT : " + dataSnapshot.toString());
+                        User u = dataSnapshot.getValue(User.class);
+                        System.out.println("uSSERRRR: " + u.getEmail());
+                        txtPhone.setText(u.getPhone());
+                        txtEmail.setText(u.getEmail());
+                        txtBirthday.setText(u.getBirthday());
+                        txtName.setText(u.getName());
+                    }
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                    auth.signOut();
+                    MainActivity.navigationView.setSelectedItemId(R.id.actionHome);
                 }
             });
         }

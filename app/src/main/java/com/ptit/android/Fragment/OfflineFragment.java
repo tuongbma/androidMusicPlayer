@@ -57,7 +57,7 @@ public class OfflineFragment extends ListFragment {
         songsManager = new SongsManager();
         // get all songs from sdcard
         askReadPermission();
-
+        askWritePermission();
         MainActivity.navigationView.setSelectedItemId(R.id.actionOffline);
 
 //        askWritePermission();

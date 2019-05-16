@@ -95,7 +95,7 @@ public class SignupActivity extends AppCompatActivity {
 //
                                 FirebaseUser userAuthor = auth.getCurrentUser();
                                 //if success --> save addition information
-                                User user = new User(userAuthor.getUid(), name, phonenumber, birthday, email);
+                                User user = new User(userAuthor.getUid(), name, phonenumber, birthday, email, "0");
                                 System.out.println("UID: " + userAuthor.getUid());
                                 FirebaseDatabase.getInstance().getReference("Users")
                                         .child(userAuthor.getUid())
@@ -108,6 +108,7 @@ public class SignupActivity extends AppCompatActivity {
                                         }
                                     }
                                 });
+
                                 // If sign in fails, display a message to the user. If sign in succeeds
                                 // the auth state listener will be notified and logic to handle the
                                 // signed in user can be handled in the listener.
