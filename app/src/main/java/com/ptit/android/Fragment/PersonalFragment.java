@@ -22,7 +22,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.ptit.android.MainActivity;
 import com.ptit.android.R;
 import com.ptit.android.authentication.LoginActivity;
-import com.ptit.android.authentication.UserInfoActivity;
 import com.ptit.android.model.User;
 
 
@@ -58,8 +57,7 @@ public class PersonalFragment extends Fragment {
         if (user == null) {
             // user auth state is changed - user is null
             // launch login activity
-//            startActivity(new Intent(UserInfoActivity.this, LoginActivity.class));
-//            finish();
+            startActivity(new Intent(getActivity(), LoginActivity.class));
         } else {
             String uID = user.getUid();
             System.out.println("UIDDDDDD" + uID);

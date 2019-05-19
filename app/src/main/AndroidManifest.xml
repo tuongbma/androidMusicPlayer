@@ -35,10 +35,6 @@
             android:name=".authentication.ResetPasswordActivity"
             android:label="@string/title_activity_reset_password"
             android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity
-            android:name=".authentication.UserInfoActivity"
-            android:label="@string/title_activity_login"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".authentication.LoginActivity"></activity>
     </application>
 

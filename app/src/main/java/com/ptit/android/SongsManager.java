@@ -41,6 +41,7 @@ public class SongsManager {
     private static Long ARTST_SEARCH_TYPE = 2L;
     private MediaMetadataRetriever metaRetriver;
     private DatabaseReference myRef;
+    private Utilities utilities = new Utilities();
 
 
     // Constructor
@@ -65,8 +66,6 @@ public class SongsManager {
             Song bean = getInfoSongFromSource(Constants.MODE.OFFLINE, filePath);
             songList.add(bean);
         }
-//        }
-        // return songs list array
         return songList;
     }
 
@@ -84,38 +83,6 @@ public class SongsManager {
     public void readData(final String text, final Long searchType, final MyCallback myCallback) {
         songList = new ArrayList<Song>();
         if (text != null && !text.isEmpty()) {
-
-//            Query query =  myRef.orderByChild("title").startAt(text.toUpperCase()).endAt(text.toLowerCase()+"\uf8ff");
-//            query.addValueEventListener(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                    for (DataSnapshot data : dataSnapshot.getChildren()) {
-////                        String searchTxt = text.toLowerCase();
-//                        Song s = data.getValue(Song.class);
-//                        songList.add(s);
-////                        String songTitle = s.getTitle();
-////                        String songArtist = s.getArtist();
-////                        if (TITLE_SEARCH_TYPE.equals(searchType)) {
-////                            if (songTitle.toLowerCase().contains(searchTxt)) {
-////                                songList.add(s);
-////                            }
-////                        } else if (ARTST_SEARCH_TYPE.equals(searchType)) {
-////                            if (songArtist.contains(text.toUpperCase())) {
-////                                // Adding each song to SongList
-////                                songList.add(s);
-////                            }
-////                        }
-//                    }
-//                    myCallback.onCallback(songList);
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                }
-//            });
-
-
             myRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -178,44 +145,11 @@ public class SongsManager {
         Bitmap songImage = BitmapFactory.decodeByteArray(art, 0, art.length);
         song.setTitle(metaRetriver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE));
         song.setArtist(metaRetriver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST));
-        String durationStr = formateMilliSeccond(Long.parseLong(metaRetriver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)));
+        String durationStr = utilities.milliSecondsToTimer(Long.parseLong(metaRetriver.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)));
         song.setDuration(durationStr);
         song.setSongImage(songImage);
         song.setSource(source);
-//		song.setSongId(id);
         return song;
-//		songTitleLabel.setText(songTitle);
-    }
-
-    /**
-     * Function to convert milliseconds time to
-     * Timer Format
-     * Hours:Minutes:Seconds
-     */
-    public static String formateMilliSeccond(long milliseconds) {
-        String finalTimerString = "";
-        String secondsString = "";
-
-        // Convert total duration into time
-        int hours = (int) (milliseconds / (1000 * 60 * 60));
-        int minutes = (int) (milliseconds % (1000 * 60 * 60)) / (1000 * 60);
-        int seconds = (int) ((milliseconds % (1000 * 60 * 60)) % (1000 * 60) / 1000);
-
-        // Add hours if there
-        if (hours > 0) {
-            finalTimerString = hours + ":";
-        }
-
-        // Prepending 0 to seconds if it is one digit
-        if (seconds < 10) {
-            secondsString = "0" + seconds;
-        } else {
-            secondsString = "" + seconds;
-        }
-
-        finalTimerString = finalTimerString + minutes + ":" + secondsString;
-        // return timer string
-        return finalTimerString;
     }
 
     /**

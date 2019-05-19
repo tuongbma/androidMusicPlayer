@@ -1,7 +1,6 @@
 package com.ptit.android;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
@@ -11,7 +10,6 @@ import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -32,7 +30,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.ptit.android.Fragment.HomeFragment;
 import com.ptit.android.Fragment.OfflineFragment;
@@ -40,7 +37,6 @@ import com.ptit.android.Fragment.OnlineFragment;
 import com.ptit.android.Fragment.PersonalFragment;
 import com.ptit.android.Fragment.PlayMusicFragment;
 import com.ptit.android.authentication.LoginActivity;
-import com.ptit.android.authentication.UserInfoActivity;
 import com.ptit.android.speechrecognize.RecognizeCommands;
 
 import org.tensorflow.lite.Interpreter;
@@ -190,7 +186,7 @@ public class MainActivity<recordingBufferLock> extends AppCompatActivity {
 
         tfLite.resizeInput(0, new int[]{RECORDING_LENGTH, 1});
 
-        // Start the recording and recognition threads. kiki
+//         Start the recording and recognition threads. kiki
         requestMicrophonePermission();
         startRecording();
         startRecognition();
@@ -498,6 +494,9 @@ public class MainActivity<recordingBufferLock> extends AppCompatActivity {
         }
     }
 
+    /**
+     * Thanh dieu huong den cac man hinh
+     */
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
@@ -549,6 +548,14 @@ public class MainActivity<recordingBufferLock> extends AppCompatActivity {
                 }
             };
 
+    /**
+     *
+     * @param fragment1
+     * @param fragment2
+     * @param fragment3
+     * @param fragment4
+     * @param fragment5
+     */
     public void showHideFragment(Fragment fragment1, Fragment fragment2, Fragment fragment3, Fragment fragment4, Fragment fragment5) {
         if (fragment1.isHidden()) {
             fragmentManager.beginTransaction()
